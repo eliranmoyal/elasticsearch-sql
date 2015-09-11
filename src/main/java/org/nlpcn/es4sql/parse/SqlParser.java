@@ -122,9 +122,12 @@ public class SqlParser {
                     parseValue(between.endExpr)});
             where.addWhere(condition);
         } else if (expr instanceof SQLNotExpr){
-            String left = ((SQLBinaryOpExpr) ((SQLNotExpr) expr).getExpr()).getLeft().toString();
-            SQLExpr right = ((SQLBinaryOpExpr) ((SQLNotExpr) expr).getExpr()).getRight();
-            Condition condition = new Condition(CONN.valueOf(opear),left, Condition.OPEAR.N, parseValue(right));
+            SQLBinaryOpExpr notExpr = (SQLBinaryOpExpr) ((SQLNotExpr) expr).getExpr();
+            String left = notExpr.getLeft().toString();
+            SQLExpr right = notExpr.getRight();
+            // add a check here to see if the not'd value is a 'like' operator
+            Condition.OPEAR notOpear = notExpr.getOperator() == SQLBinaryOperator.Like ? Condition.OPEAR.NLIKE : Condition.OPEAR.N;
+            Condition condition = new Condition(CONN.valueOf(opear), left, notOpear, parseValue(right));
             where.addWhere(condition);
         }
         else if (expr instanceof SQLMethodInvokeExpr) {

@@ -22,7 +22,7 @@ import org.nlpcn.es4sql.spatial.*;
 
 public abstract class Maker {
 
-	private static final Set<OPEAR> NOT_OPEAR_SET = Sets.newHashSet(OPEAR.N, OPEAR.NIN, OPEAR.ISN, OPEAR.NBETWEEN);
+	private static final Set<OPEAR> NOT_OPEAR_SET = Sets.newHashSet(OPEAR.N, OPEAR.NIN, OPEAR.ISN, OPEAR.NBETWEEN, OPEAR.NLIKE);
 
 	private boolean isQuery = false;
 
@@ -143,6 +143,7 @@ public abstract class Maker {
 				break;
 			}
 		case LIKE:
+        case NLIKE:
 			String queryStr = ((String) value).replace('%', '*').replace('_', '?');
 			WildcardQueryBuilder wildcardQuery = QueryBuilders.wildcardQuery(name, queryStr);
 			x = isQuery ? wildcardQuery : FilterBuilders.queryFilter(wildcardQuery);
